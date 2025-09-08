@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'my_textFormFeild.dart';
 
 class CustomRegisterForm extends StatelessWidget {
-  final TextEditingController usernameController;
+  final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final GlobalKey<FormState> formKey;
 
   const CustomRegisterForm({
     super.key,
-    required this.usernameController,
+    required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
     required this.formKey,
@@ -22,19 +22,19 @@ class CustomRegisterForm extends StatelessWidget {
       child: Column(
         children: [
           MyTextFormField(
-            labelText: "Email or phone number",
-            controller: usernameController,
+            labelText: "Email",
+            controller: emailController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return "Please enter your username";
+                return "Please enter your email";
               }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value) &&
-                  !RegExp(r'^\d{10,15}$').hasMatch(value)) {
-                return "Please enter a valid email or phone number";
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return "Please enter a valid email";
               }
               return null;
             },
           ),
+
           const SizedBox(height: 20),
 
           MyTextFormField(

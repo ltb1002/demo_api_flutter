@@ -5,6 +5,7 @@ class MyTextFormField extends StatelessWidget {
   final bool isPassword;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final TextInputType keyboardType;
 
   const MyTextFormField({
     super.key,
@@ -12,15 +13,17 @@ class MyTextFormField extends StatelessWidget {
     this.isPassword = false,
     required this.controller,
     this.validator,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: TextFormField(
         controller: controller,
         obscureText: isPassword,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),

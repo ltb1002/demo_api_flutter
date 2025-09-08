@@ -1,5 +1,6 @@
 import 'package:demo_test_api/api/api_service.dart';
 import 'package:demo_test_api/customs/my_textFormFeild.dart';
+import 'package:demo_test_api/screens/forgotPass_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_test_api/app/routes/app_routes.dart';
 import 'package:get/get.dart';
@@ -13,16 +14,17 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   bool _isLoading = false;
 
   @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    if (Get.arguments != null && Get.arguments['email'] != null) {
+      emailController.text = Get.arguments['email'];
+    }
   }
 
   Future<void> _login() async {
@@ -32,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final res = await ApiService.login(
-        usernameController.text.trim(),
-        passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text,
       );
 
       Get.snackbar(
@@ -84,15 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 30),
                 MyTextFormField(
-                  labelText: 'Email or phone number',
-                  controller: usernameController,
+                  labelText: 'Email',
+                  controller: emailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email or phone number';
+                      return 'Please enter your email';
                     }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value) &&
-                        !RegExp(r'^\d{10,15}$').hasMatch(value)) {
-                      return 'Please enter a valid email or phone number';
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Please enter a valid email';
                     }
                     return null;
                   },
@@ -115,7 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
-                    Get.snackbar('Forgot Password', 'Feature coming soon!');
+                    // Điều hướng sang ForgotPasswordScreen
+                    Get.to(
+                      () => ForgotPasswordScreen(),
+                      arguments: {"email": emailController.text.trim()},
+                    );
                   },
                   child: const Text(
                     'Forgot Password?',

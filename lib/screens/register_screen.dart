@@ -13,16 +13,15 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-
   bool _isLoading = false;
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -45,19 +44,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final res = await ApiService.register(
-        usernameController.text.trim(),
-        passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
+      final success = res['success'] == true;
       Get.snackbar(
-        res['success'] == true ? 'Success' : 'Error',
+        success ? 'Success' : 'Error',
         res['message'] ?? 'Unknown response',
-        backgroundColor: res['success'] == true ? Colors.green : Colors.red,
+        backgroundColor: success ? Colors.green : Colors.red,
         colorText: Colors.white,
       );
 
-      if (res['success'] == true) {
-        Get.offNamed(AppRoutes.login); // Điều hướng về LoginScreen
+      if (success) {
+        Get.offNamed(
+          AppRoutes.login,
+          arguments: {"email": emailController.text.trim()},
+        );
       }
     } catch (e) {
       Get.snackbar(
@@ -98,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 30),
               CustomRegisterForm(
-                usernameController: usernameController,
+                emailController: emailController,
                 passwordController: passwordController,
                 confirmPasswordController: confirmPasswordController,
                 formKey: _formKey,
@@ -120,10 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Register',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
+                      : const Text('Register', style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 20),
